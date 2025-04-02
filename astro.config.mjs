@@ -16,4 +16,7 @@ export default defineConfig({
   output: "server",
   integrations: [db()],
   adapter: vercel(),
+  db: {
+    studio: false
+  }
 });
