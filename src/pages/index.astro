@@ -1,11 +1,193 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import ThemeToggle from "../components/ThemeToggle.astro";
+import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-	<Welcome />
+  <section class="flex flex-col justify-center bg-background text-foreground">
+    {/* Header */}
+    <header class="flex items-center justify-between py-5 px-10">
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-full bg-purple"></div>
+        <p class="text-2xl font-semibold">
+          Short <span class="text-primary font-bold">URL</span>
+        </p>
+      </div>
+      <nav class="flex items-center gap-4">
+        <ThemeToggle />
+        <button
+          class="bg-orange transition-colors ease-in-out duration-200 cursor-pointer hover:bg-orange-dark py-2 px-4 flex text-center rounded font-semibold text-foreground"
+        >
+          Crear cuenta
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      {/* Hero Section */}
+      <section class="bg-gradient-to-b from-30% from-background to-80% to-[#130b1dcc]">
+        <section
+          class="w-full py-40 flex flex-col justify-center items-center text-center text-pretty"
+        >
+          <h1
+            class="mb-4 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl"
+          >
+            <span class="text-purple">Short</span> URLs, <span
+              class="text-orange">Big</span
+            > Impact
+          </h1>
+          <p class="mx-auto mb-8 max-w-md text-muted-foreground">
+            Create memorable links in seconds. Track clicks. Share anywhere.
+          </p>
+          <div class="mx-auto mb-10 mt-4 flex w-1/2 flex-col gap-2 sm:flex-row">
+            <input
+              type="url"
+              placeholder="Paste your long URL here"
+              class="h-12 w-full outline-0 ring bg-primary/5 ring-purple/30 focus-visible:ring-purple rounded text-foreground px-3 flex items-center"
+            />
+            <button
+              class="h-12 px-8 bg-purple hover:bg-purple-dark rounded cursor-pointer transition-colors ease-in-out duration-200"
+              >Shorten</button
+            >
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section
+          class="py-14 pb-20 w-full flex flex-col items-center"
+        >
+          <div class="container">
+            <h2 class="mb-12 text-center text-3xl font-bold">
+              ¿Por que <span class="">Short</span>
+              <span class="text-primary">URL</span>?
+            </h2>
+            <div class="grid gap-8 md:grid-cols-3">
+              <div class="rounded-lg p-6 text-center">
+                <div
+                  class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple/10"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-purple"
+                  >
+                    <path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
+                  </svg>
+                </div>
+                <h3 class="mb-2 text-xl font-medium">Lightning Fast</h3>
+                <p class="text-sm text-muted-foreground">
+                  Instant shortening. Faster loading.
+                </p>
+              </div>
+              <div class="rounded-lg p-6 text-center">
+                <div
+                  class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange/10"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-orange"
+                  >
+                    <path d="M3 3v18h18"></path>
+                    <path d="m19 9-5 5-4-4-3 3"></path>
+                  </svg>
+                </div>
+                <h3 class="mb-2 text-xl font-medium">Simple Analytics</h3>
+                <p class="text-sm text-muted-foreground">
+                  Track clicks and performance at a glance.
+                </p>
+              </div>
+              <div class="rounded-lg p-6 text-center">
+                <div
+                  class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple/10"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-purple"
+                  >
+                    <path
+                      d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"
+                    ></path>
+                    <path d="M8.5 8.5v.01"></path>
+                    <path d="M16 15.5v.01"></path>
+                    <path d="M12 12v.01"></path>
+                    <path d="M11 17v.01"></path>
+                    <path d="M7 14v.01"></path>
+                  </svg>
+                </div>
+                <h3 class="mb-2 text-xl font-medium">Custom Links</h3>
+                <p class="text-sm text-muted-foreground">
+                  Branded URLs that reflect your identity.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      {/* CTA Section */}
+      <section
+        class="bg-gradient-to-r from-purple to-orange py-14 text-white flex flex-col items-center justify-center"
+      >
+        <div class="container text-center">
+          <h2 class="mb-6 text-3xl font-bold">Estas listo para empezar?</h2>
+          <button
+            class="bg-white text-purple hover:bg-white/90 px-5 py-2 rounded cursor-pointer transition-colors ease-in-out duration-200 font-semibold"
+          >
+            Crea una cuenta
+          </button>
+        </div>
+      </section>
+    </main>
+
+    {/* Footer */}
+    <footer class="py-10 w-full flex justify-around">
+      <div class="container">
+        <div
+          class="flex flex-col items-center justify-between gap-4 md:flex-row"
+        >
+          <div class="flex items-center gap-2">
+            <div class="h-6 w-6 rounded-full bg-purple"></div>
+            <p class="font-bold">Short <span class="text-primary">URL</span></p>
+          </div>
+          <p class="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} ShortURL. All rights reserved.
+          </p>
+          <div class="flex gap-4">
+            <a href="#" class="text-muted-foreground hover:text-purple cursor-pointer transition-colors ease-in-out duration-200">
+              Terms
+            </a>
+            <a href="#" class="text-muted-foreground hover:text-purple cursor-pointer transition-colors ease-in-out duration-200">
+              Privacy
+            </a>
+            <a href="#" class="text-muted-foreground hover:text-purple cursor-pointer transition-colors ease-in-out duration-200">
+              Contact
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </section>
 </Layout>
