@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 import db from '@astrojs/db';
 
+import vercel from '@astrojs/vercel';
+
 // https://astro.build/config
 export default defineConfig({
   vite: {
@@ -13,4 +15,5 @@ export default defineConfig({
 
   output: "server",
   integrations: [db()],
+  adapter: vercel(),
 });
