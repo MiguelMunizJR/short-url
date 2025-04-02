@@ -10,17 +10,9 @@ export interface ShortenedURLInterface {
   createdAt: number;
 }
 
-//* Funcion para crear un hash SHA1 de una url
-const createSHA1Hash = (str: string) => {
-  if (!str) return "";
-
-  const hash = crypto.createHash("sha1").update(str);
-  return hash.digest("hex");
+const createRandomHash = () => {
+  return Math.random().toString(36).substring(2, 8)
 };
-
-//? Checamos si estamos en dev o prod
-const isDev = process.env.NODE_ENV === "development";
-const DOMAIN = isDev ? "http://localhost:4321" : "https://shorturl.vercel.app";
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -51,14 +43,19 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (existingHashURL.length > 0) {
       const { hash_url } = existingHashURL[0];
-      let shortendURL = `${DOMAIN}/${hash_url}`;
+      const newUrl = new URL(request.url);
 
-      return new Response(JSON.stringify(shortendURL), {
-        status: 200,
-      });
+      return new Response(
+        JSON.stringify({
+          shortUrl: `${newUrl.origin}/${hash_url}`,
+        }),
+        {
+          status: 201,
+        }
+      );
     }
 
-    const hashedURL = createSHA1Hash(inputURL).slice(0, 6);
+    const hashedURL = createRandomHash();
 
     const shortenedObject: ShortenedURLInterface = {
       id: crypto.randomUUID(),
@@ -70,11 +67,16 @@ export const POST: APIRoute = async ({ request }) => {
 
     //? Guardar la url en la base de datos 💀
     await db.insert(shortendURLTable).values(shortenedObject);
+    const newUrl = new URL(request.url);
 
-    let shortendURL = `${DOMAIN}/${hashedURL}`;
-    return new Response(JSON.stringify(shortendURL), {
-      status: 200,
-    });
+    return new Response(
+      JSON.stringify({
+        shortUrl: `${newUrl.origin}/${hashedURL}`,
+      }),
+      {
+        status: 201,
+      }
+    );
   } catch (error: any) {
     return new Response(error.message, { status: 500 });
   }

@@ -24,8 +24,6 @@ const {} = Astro.props;
 </form>
 
 <script>
-import { navigate } from "astro/virtual-modules/transitions-router.js";
-
   const $form = document.getElementById("shorten-form");
   const API_URL = "/api/shorten";
 
@@ -46,7 +44,6 @@ import { navigate } from "astro/virtual-modules/transitions-router.js";
       })
       .then((data) => {
         console.log(data);
-        // navigate(data);
       });
   });
 </script>

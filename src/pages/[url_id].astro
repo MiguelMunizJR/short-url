@@ -1,27 +1,25 @@
 ---
-import { db } from "astro:db";
-import { eq } from "astro:db";
-import { shortendURLTable } from "astro:db";
+import { shortendURLTable, eq, db } from "astro:db";
 import Layout from "../layouts/Layout.astro";
-const { url_id } = Astro.params;
+const { params, redirect } = Astro;
+const { url_id } = params;
 
 //? Verificar si la url ya existe en la base de datos
-// const shortenedURL = await db
-//   .select()
-//   .from(shortendURLTable)
-//   .where(eq(shortendURLTable.hash_url, url_id));
+const shortenedURL = await db
+  .select()
+  .from(shortendURLTable)
+  .where(eq(shortendURLTable.hash_url, url_id));
 
-// if (!shortenedURL) {
-//   console.log("URL not found");
-//   return navigate("/");
-// }
+if (shortenedURL.length === 0) {
+  return redirect("/");
+}
 
-console.log(url_id, Astro.url.pathname);
-// return navigate(shortenedURL?.url);
+const newURL = new URL(shortenedURL[0].url);
+return redirect(newURL?.origin, 301);
 ---
 
 <Layout>
-  <main class="flex flex-col items-center justify-center">
+  <main class="flex min-h-[50vh] flex-col items-center justify-center">
     <h1 class="text-4xl font-bold">Loading...</h1>
   </main>
 </Layout>
