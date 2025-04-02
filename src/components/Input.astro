@@ -1,0 +1,17 @@
+---
+interface Props {}
+
+const {} = Astro.props;
+---
+
+<form action="POST" class="w-11/12 mb-10 flex flex-col items-center gap-3 sm:flex-row">
+  <input
+    type="url"
+    placeholder="Paste your long URL here"
+    class="h-12 w-full outline-0 ring bg-primary/5 ring-purple/30 focus-visible:ring-purple rounded text-foreground px-3 flex items-center"
+  />
+  <button
+    class="h-12 w-1/2 md:w-auto px-8 bg-purple hover:bg-purple-dark rounded cursor-pointer transition-colors ease-in-out duration-200 text-sm md:text-base font-semibold drop-shadow-md"
+    >Shorten</button
+  >
+</form>
