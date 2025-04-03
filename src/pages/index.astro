@@ -18,7 +18,7 @@ import RedirectButton from "../components/RedirectButton.astro";
       <h1
         class="mb-4 text-4xl font-bold tracking-tight sm:text-4xl md:text-6xl"
       >
-        <span class="text-primary">Acorta </span>tus URLs, tu mejor <span
+        <span class="text-primary">🌐Acorta </span>tus URLs, tu mejor <span
           class="text-secondary">Opción</span
         >
       </h1>
@@ -32,24 +32,20 @@ import RedirectButton from "../components/RedirectButton.astro";
 
     {/* URL Result Section */}
     <section
-      class="max-w-2xl mx-auto flex-col justify-center items-center text-center text-pretty animate-fade-in-down px-6 sm:px-0 flex"
+      class="max-w-2xl pt-0 lg:pt-6 mx-auto flex-col justify-center items-center text-center text-pretty animate-fade-in-down px-6 sm:px-0 flex"
     >
       <article
         class="mt-2 flex w-full sm:w-136 md:max-w-lg rounded-lg border border-purple/20 bg-card p-4 relative flex-col items-center justify-center drop-shadow-lg"
       >
-        <article class="w-full flex items-center justify-between mb-2">
-          <p class="text-base text-font-secondary">Tu URL acortada</p>
-          <div class="flex items-center gap-3">
-            <CopyClipboardButton />
-            <RedirectButton />
-          </div>
-        </article>
-
-        <article class="w-full flex flex-col justify-center gap-2 mb-4">
+        <article class="w-full flex flex-col justify-center gap-4 mb-6">
           <div
             id="display-url"
-            class="rounded bg-background/50 p-2 flex-1 transition-colors ease-in-out duration-200"
+            class="h-14 w-full items-center flex rounded bg-background/50 py-2 px-4 transition-colors ease-in-out duration-200 relative"
           >
+            <div class="flex gap-4 absolute bottom-4 right-4 z-10">
+              <CopyClipboardButton />
+              <RedirectButton />
+            </div>
             <p
               id="shortened-url-display"
               class="font-semibold text-base truncate text-primary-dark animate-fade-in"
@@ -60,15 +56,26 @@ import RedirectButton from "../components/RedirectButton.astro";
           <p
             class="text-xs text-font-secondary text-center text-pretty w-3/4 mx-auto"
           >
-            URL original: <span id="original-url" class="text-secondary/80 font-semibold">  https://www.example.com</span>
+            URL original: <span
+              id="original-url"
+              class="text-secondary/80 font-semibold"
+            >
+              https://www.example.com/SG43fd2d</span
+            >
           </p>
         </article>
 
         <article
-          class="w-full flex-col items-center text-xs text-font-secondary gap-2"
+          class="w-full flex justify-around items-center text-sm font-semibold text-font-secondary gap-2"
         >
-          <p class="text-secondary/80 text-pretty text-end font-semibold">
-            Creado: Justo ahora
+          <p class="text-secondary/80 text-pretty text-end">
+            <span id="created-at"></span>
+          </p>
+          <p class="text-secondary/80 text-pretty text-end">
+            <span id="expire-at" class="text-secondary/80 font-semibold"></span>
+          </p>
+          <p class="text-secondary/80 text-pretty text-end">
+            <span id="clicks"></span>
           </p>
         </article>
       </article>
@@ -76,7 +83,7 @@ import RedirectButton from "../components/RedirectButton.astro";
       <p
         class="text-xs text-font-secondary text-center text-pretty py-4 w-3/4 mx-auto"
       >
-        No necesitas registrarte. Usos básicos gratuitos.
+        No necesitas registrarte. Usos básicos gratuitos. 😉
       </p>
     </section>
 
@@ -101,7 +108,7 @@ import RedirectButton from "../components/RedirectButton.astro";
 
   <script>
     import confetti from "canvas-confetti";
-    import { notyfInstance } from "../utils";
+    import { notyfInstance, isRelativeTime, countClicks } from "../utils";
     const notify = notyfInstance();
 
     const $form = document.getElementById("shorten-form");
@@ -109,13 +116,19 @@ import RedirectButton from "../components/RedirectButton.astro";
     const $displayElement = document.getElementById("shortened-url-display");
     const $displayURL = document.getElementById("display-url");
     const $originalURL = document.getElementById("original-url");
+    const $createdAt = document.getElementById("created-at");
+    const $expireAt = document.getElementById("expire-at");
+    const $clicks = document.getElementById("clicks");
+
+    // Icons
+    const $copyIcon = document.getElementById("copy-icon");
+    const $externalLinkIcon = document.getElementById("external-link-icon");
 
     // Buttons
     const $copyBtn = document.getElementById("copy-btn");
     const $openUrlBtn = document.getElementById("open-url-btn");
 
     const API_URL = "/api/shorten";
-    let shortenedURL = "";
 
     $form?.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -143,7 +156,10 @@ import RedirectButton from "../components/RedirectButton.astro";
           throw new Error("Something went wrong");
         })
         .then((data) => {
-          shortenedURL = data.shortUrl;
+          const relativeTextTime = isRelativeTime(data.createdAt, true);
+          const expireTextTime = isRelativeTime(data.createdAt, false);
+          const clicks = countClicks(data.clicks);
+
           confetti({
             particleCount: 120,
             spread: 100,
@@ -153,10 +169,26 @@ import RedirectButton from "../components/RedirectButton.astro";
           $inputURL.value = "";
           $inputURL.setAttribute("disabled", "");
 
-          // Actualizar el DOM directamente
-          if ($displayElement && $displayURL && $originalURL) {
+          if (
+            $displayElement &&
+            $displayURL &&
+            $originalURL &&
+            $createdAt &&
+            $expireAt &&
+            $clicks
+          ) {
+            // Text Content
             $displayElement.textContent = data.shortUrl;
             $originalURL.textContent = data.url;
+            $createdAt.textContent = relativeTextTime;
+            $expireAt.textContent = expireTextTime;
+            $clicks.textContent = clicks;
+
+            // Buttons
+            $copyBtn?.classList.remove("hidden");
+            $openUrlBtn?.classList.remove("hidden");
+
+            // Animations
             $displayElement.classList.add("animate-fade-in");
             $displayElement.classList.add("text-secondary-light");
           }
@@ -183,14 +215,10 @@ import RedirectButton from "../components/RedirectButton.astro";
     $copyBtn?.addEventListener("click", () => {
       if ($displayURL?.textContent?.includes("Ejemplo")) return;
 
-      const $copyIcon = document.getElementById("copy-icon");
       const $checkIcon = document.getElementById("check-icon");
-
       const url = $displayURL?.textContent?.trim() || window.location.href;
 
       navigator.clipboard.writeText(url);
-      notify.success("URL copiada al portapapeles");
-
       $copyIcon?.classList.add("scale-0", "opacity-0");
       $checkIcon?.classList.remove("scale-0", "opacity-0");
       $checkIcon?.classList.add("scale-110");
@@ -206,7 +234,6 @@ import RedirectButton from "../components/RedirectButton.astro";
     $openUrlBtn?.addEventListener("click", async () => {
       if ($displayURL?.textContent?.includes("Ejemplo")) return;
 
-      const $externalLinkIcon = document.getElementById("external-link-icon");
       const newURL = $displayURL?.textContent?.trim();
       if (!newURL) return;
 
