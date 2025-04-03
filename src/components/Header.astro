@@ -5,15 +5,43 @@ import ThemeToggle from "./ThemeToggle.astro";
 <header
   class="flex just items-center absolute top-0 py-5 bg-transparent w-full animate-fade-in z-30"
 >
-  <section class="mx-auto w-11/12 sm:w-xl md:w-2xl lg:w-3xl xl:w-5xl flex justify-between items-center gap-2">
-    <div class="flex items-center gap-2">
+  <section
+    class="mx-auto w-11/12 sm:w-xl md:w-2xl lg:w-3xl xl:w-5xl flex justify-between items-center gap-2"
+  >
+    <div class="flex items-center gap-1">
       <div class="w-4 h-4 md:h-6 md:w-6 rounded-full bg-purple"></div>
-      <p class="md:text-xl text-lg text-secondary font-semibold">
+      <p class="md:text-xl text-xl text-secondary font-semibold">
         Shortend<span class="text-primary font-bold">URL</span>
       </p>
     </div>
     <nav>
-      <ThemeToggle />
+      <ThemeToggle class="w-6 h-6" />
     </nav>
   </section>
 </header>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const root = document.documentElement;
+    const $toggleBtn = document.getElementById("toggle-btn");
+
+    document.documentElement.classList.toggle(
+      "dark",
+      localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
+
+    $toggleBtn?.addEventListener("click", () => {
+      const isLight = document.documentElement.classList.contains("light");
+      
+      if (isLight) {
+        document.documentElement.classList.remove("light");
+        localStorage.theme = "dark";
+      } else {
+        document.documentElement.classList.add("light");
+        localStorage.theme = "light";
+      }
+    }); 
+  });
+</script>

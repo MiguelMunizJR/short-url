@@ -10,74 +10,62 @@ export interface ShortenedURLInterface {
   createdAt: number;
 }
 
-const createRandomHash = () => {
-  return Math.random().toString(36).substring(2, 8)
+const createRandomHash = (): string =>
+  crypto.randomBytes(4).toString("hex").substring(0, 6);
+
+const buildShortUrl = (request: Request, hash: string): URL => {
+  const baseUrl = new URL(request.url);
+  return new URL(`${baseUrl.origin}/${hash}`);
 };
 
 export const POST: APIRoute = async ({ request }) => {
   try {
     const formData = await request.formData();
-    let inputURL = formData.get("inputURL") as string;
+    const inputURL = formData.get("inputURL")?.toString().trim();
 
     if (!inputURL) {
-      return new Response("Url is required", { status: 400 });
+      return new Response("URL is required", { status: 400 });
     }
 
-    //? Agregar protocolo al url si no existe 💀
-    if (!inputURL.includes("http")) inputURL = `https://${inputURL}`;
-
-    //? 💀
-    const isValidUrl = inputURL.match(
-      /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
-    );
-
-    if (!isValidUrl) {
-      return new Response("Invalid URL", { status: 400 });
-    }
-
-    //? Si existe la url en la base de datos, devolver el hash_url
-    const existingHashURL: ShortenedURLInterface[] = await db
+    // Verificar URL existente
+    const [existingEntry] = await db
       .select()
       .from(shortendURLTable)
-      .where(eq(shortendURLTable.url, inputURL));
+      .where(eq(shortendURLTable.url, inputURL))
+      .limit(1);
 
-    if (existingHashURL.length > 0) {
-      const { hash_url } = existingHashURL[0];
-      const newUrl = new URL(request.url);
-
+    if (existingEntry) {
       return new Response(
         JSON.stringify({
-          shortUrl: `${newUrl.origin}/${hash_url}`,
+          shortUrl: buildShortUrl(request, existingEntry.hash_url),
+          ...existingEntry,
         }),
-        {
-          status: 201,
-        }
+        { status: 200 }
       );
     }
 
-    const hashedURL = createRandomHash();
-
-    const shortenedObject: ShortenedURLInterface = {
+    const newEntry: ShortenedURLInterface = {
       id: crypto.randomUUID(),
       url: inputURL,
-      hash_url: hashedURL,
+      hash_url: createRandomHash(),
       clicks: 0,
       createdAt: Date.now(),
     };
 
-    //? Guardar la url en la base de datos 💀
-    await db.insert(shortendURLTable).values(shortenedObject);
-    const newUrl = new URL(request.url);
+    await db.insert(shortendURLTable).values(newEntry);
 
     return new Response(
       JSON.stringify({
-        shortUrl: `${newUrl.origin}/${hashedURL}`,
+        shortUrl: buildShortUrl(request, newEntry.hash_url),
+        ...newEntry,
       }),
-      {
-        status: 201,
-      }
+      { status: 201 }
     );
-  } catch (error: any) {
-    return new Response(error.message, { status: 500 });
+  } catch (error) {
+    console.error("Error shortening URL:", error);
+    return new Response("Internal Server Error", {
+      status: 500,
+      headers: { "Content-Type": "text/plain" },
+    });
   }
 };

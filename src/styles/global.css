@@ -1,31 +1,27 @@
 @import "tailwindcss";
 @plugin "@midudev/tailwind-animations";
 
-@theme {
+@layer theme {
+  @theme {
     --color-background: #020103;
     --color-foreground: #fafafa;
-
-    --color-card: #0a0a0b;
+    --color-purple-gradient: #130b1de0;
+  
+    --color-card: #8a2be210;
     --color-card-foreground: #fafafa;
-
-    --color-popover: #0a0a0b;
-    --color-popover-foreground: #fafafa;
-
+  
     --color-primary: #8a2be2;
-    --color-primary-foreground: #ffffff;
-
+    --color-primary-light: #a64dff;
+    --color-primary-dark: #7209db;
+  
     --color-secondary: #ff9500;
-    --color-secondary-foreground: #ffffff;
-
-    --color-muted: #292929;
-    --color-muted-foreground: #aaaaaa;
-
-    --color-accent: #ff9500;
-    --color-accent-foreground: #ffffff;
-
-    --color-destructive: #9f1239;
-    --color-destructive-foreground: #fafafa;
-
+    --color-secondary-light: #ffad33;
+    --color-secondary-dark: #ff7d00;
+  
+    --color-font-primary: #999999;
+    --color-font-secondary: #bbbbbb;
+    --color-font-white: #f0f0f0;
+    
     --color-border: #292929;
     --color-input: #292929;
     --color-ring: #8a2be2;
@@ -38,4 +34,32 @@
     --color-orange: #ff9500;
     --color-orange-light: #ffad33;
     --color-orange-dark: #ff7d00;
+  }
+
+  .light {
+    --color-background: #f0f0f0;
+    --color-foreground: #0a0a0b;
+    --color-purple-gradient: #a64dff20;
+
+    --color-card: #8a2be230;
+    --color-card-foreground: #0a0a0b;
+
+    --color-primary: #ff9500;
+    --color-primary-light: #ffad33;
+    --color-primary-dark: #ff7d00;
+
+    --color-secondary: #8a2be2;
+    --color-secondary-light: #a64dff;
+    --color-secondary-dark: #7209db;
+
+    --color-font-primary: #0a0a0b;
+    --color-font-secondary: #888888;
+    --color-font-white: #f0f0f0;
+  }
+  
+  html {
+    font-family: "Inter", sans-serif;
+    transition: all 500ms ease, color 300ms ease-in-out;
+  }
 }
+
