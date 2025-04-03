@@ -3,17 +3,35 @@ import { shortendURLTable, eq, db } from "astro:db";
 const { params, redirect } = Astro;
 const { url_id } = params;
 
+if (!url_id) {
+  return redirect("/");
+}
+
 // Verificar si la url ya existe en la base de datos
 const shortenedURL = await db
   .select()
   .from(shortendURLTable)
-  .where(eq(shortendURLTable.hash_url, url_id));
+  .where(eq(shortendURLTable.hash_url, url_id))
+  .limit(1);
 
-if (shortenedURL.length === 0) {
+if (shortenedURL.length === 0 || !shortenedURL[0]?.url) {
   return redirect("/");
 }
 
-// Redireccionar a la url original 💀
-const newURL = new URL(shortenedURL[0].url);
-return redirect(newURL?.origin, 301);
+// Obtener la URL original
+const originalUrl = shortenedURL[0].url;
+
+// Verificar si la URL ya tiene protocolo, si no, agregar https://
+let redirectUrl = originalUrl;
+if (!/^https?:\/\//i.test(originalUrl)) {
+  redirectUrl = `https://${originalUrl}`;
+}
+
+try {
+  new URL(redirectUrl);
+  return redirect(redirectUrl, 301);
+} catch (error) {
+  console.error("URL inválida:", originalUrl);
+  return redirect("/");
+}
 ---

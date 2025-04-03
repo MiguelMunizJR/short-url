@@ -3,28 +3,29 @@ import Feature from "../components/Feature.astro";
 import Layout from "../layouts/Layout.astro";
 import Input from "../components/Input.astro";
 import { features } from "../assets/features";
+import CopyClipboardButton from "../components/CopyClipboardButton.astro";
+import RedirectButton from "../components/RedirectButton.astro";
 ---
 
 <Layout>
   <main
-    class="flex pt-24 pb-48 flex-col justify-center bg-gradient-to-b from-30% from-background via-40% via-[#000] to-70% to-[#130b1db4] text-foreground"
+    class="flex pt-24 pb-48 flex-col justify-center bg-gradient-to-b from-30% from-background via-40% via-background to-70% to-purple-gradient text-foreground"
   >
     {/* Hero Section */}
     <section
       class="max-w-2xl mx-auto pt-20 sm:pt-34 md:pt-40 px-6 sm:px-0 flex flex-col justify-center items-center text-center text-pretty animate-fade-in-down"
     >
       <h1
-        class="mb-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-6xl"
+        class="mb-4 text-4xl font-bold tracking-tight sm:text-4xl md:text-6xl"
       >
-        <span class="text-purple">Acorta </span>tus URLs, tu mejor <span
-          class="text-orange">Opción</span
+        <span class="text-primary">Acorta </span>tus URLs, tu mejor <span
+          class="text-secondary">Opción</span
         >
       </h1>
       <p
-        class="mx-auto mb-4 md:mb-8 text-sm md:text-base max-w-md text-muted-foreground"
+        class="mx-auto mb-8 text-base md:text-base max-w-md text-font-secondary"
       >
-        Crear enlaces memorables en segundos. Seguimiento de clicks. Compartir
-        en cualquier lugar.
+        Crear enlaces memorables en segundos. Seguimiento de clicks.
       </p>
       <Input />
     </section>
@@ -34,86 +35,46 @@ import { features } from "../assets/features";
       class="max-w-2xl mx-auto flex-col justify-center items-center text-center text-pretty animate-fade-in-down px-6 sm:px-0 flex"
     >
       <article
-        class="mt-2 flex w-full sm:w-136 md:max-w-lg rounded-lg border border-purple/20 bg-purple/5 p-4 relative flex-col items-center justify-center drop-shadow-md"
+        class="mt-2 flex w-full sm:w-136 md:max-w-lg rounded-lg border border-purple/20 bg-card p-4 relative flex-col items-center justify-center drop-shadow-lg"
       >
         <article class="w-full flex items-center justify-between mb-2">
-          <p class="text-sm font-medium text-muted-foreground">
-            Tu URL acortada
-          </p>
-          <div class="flex gap-2">
-            <button
-              aria-label="Copiar URL"
-              class="h-8 w-8 text-secondary/70 cursor-pointer hover:text-secondary transition-colors ease-in-out duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-clipboard-copy-icon lucide-clipboard-copy"
-                ><rect width="8" height="4" x="8" y="2" rx="1" ry="1"
-                ></rect><path
-                  d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
-                ></path><path d="M16 4h2a2 2 0 0 1 2 2v4"></path><path
-                  d="M21 14H11"></path><path d="m15 10-4 4 4 4"></path></svg
-              >
-              <span class="sr-only">Copiar URL</span>
-            </button>
-            <button
-              class="h-8 w-8 text-secondary/70 cursor-pointer hover:text-secondary transition-colors ease-in-out duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-external-link-icon lucide-external-link"
-                ><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path
-                  d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                ></path></svg
-              >
-              <span class="sr-only">Abrir URL</span>
-            </button>
+          <p class="text-base text-font-secondary">Tu URL acortada</p>
+          <div class="flex items-center gap-3">
+            <CopyClipboardButton />
+            <RedirectButton />
           </div>
         </article>
 
-        <article class="w-full flex items-center gap-2 mb-3">
-          <div id="display-url" class="rounded bg-background/50 p-2 flex-1">
+        <article class="w-full flex flex-col justify-center gap-2 mb-4">
+          <div
+            id="display-url"
+            class="rounded bg-background/50 p-2 flex-1 transition-colors ease-in-out duration-200"
+          >
             <p
               id="shortened-url-display"
-              class="font-medium text-purple truncate animate-fade-in"
+              class="font-semibold text-base truncate text-primary-dark animate-fade-in"
             >
-              https://short.url/a7b9c3
+              Ejemplo: https://short.url/e42f3s
             </p>
           </div>
+          <p
+            class="text-xs text-font-secondary text-center text-pretty w-3/4 mx-auto"
+          >
+            URL original: <span id="original-url" class="text-secondary/80 font-semibold">  https://www.example.com</span>
+          </p>
         </article>
 
         <article
-          class="w-full flex-col items-center text-xs text-muted-foreground gap-2"
+          class="w-full flex-col items-center text-xs text-font-secondary gap-2"
         >
-          <div class="flex items-center justify-center">
-            <p class="text-muted-foreground text-pretty">
-              Original: https://example.com/very-long-url-that-needs-shortening
-            </p>
-          </div>
-          <p class="text-muted-foreground pt-4 text-pretty font-semibold">
+          <p class="text-secondary/80 text-pretty text-end font-semibold">
             Creado: Justo ahora
           </p>
         </article>
       </article>
 
       <p
-        class="text-xs text-muted-foreground text-center text-pretty py-4 w-3/4 mx-auto"
+        class="text-xs text-font-secondary text-center text-pretty py-4 w-3/4 mx-auto"
       >
         No necesitas registrarte. Usos básicos gratuitos.
       </p>
@@ -140,16 +101,34 @@ import { features } from "../assets/features";
 
   <script>
     import confetti from "canvas-confetti";
+    import { notyfInstance } from "../utils";
+    const notify = notyfInstance();
+
     const $form = document.getElementById("shorten-form");
     const $inputURL = document.getElementById("inputURL") as HTMLInputElement;
     const $displayElement = document.getElementById("shortened-url-display");
     const $displayURL = document.getElementById("display-url");
+    const $originalURL = document.getElementById("original-url");
+
+    // Buttons
+    const $copyBtn = document.getElementById("copy-btn");
+    const $openUrlBtn = document.getElementById("open-url-btn");
 
     const API_URL = "/api/shorten";
     let shortenedURL = "";
 
     $form?.addEventListener("submit", (event) => {
       event.preventDefault();
+      const isLight = document.documentElement.classList.contains("light");
+
+      if (isLight) {
+        $displayElement?.classList.remove("text-secondary-light");
+        $displayElement?.classList.add("text-secondary");
+      } else {
+        $displayElement?.classList.remove("text-secondary");
+        $displayElement?.classList.add("text-secondary-light");
+      }
+
       const formData = new FormData(event.target as HTMLFormElement);
 
       fetch(API_URL, {
@@ -164,23 +143,24 @@ import { features } from "../assets/features";
           throw new Error("Something went wrong");
         })
         .then((data) => {
-          $inputURL.setAttribute("disabled", "");
-          $inputURL.value = "";
           shortenedURL = data.shortUrl;
           confetti({
             particleCount: 120,
             spread: 100,
-            origin: { y: 0.6 },
+            origin: { y: 0.7 },
             disableForReducedMotion: true,
           });
+          $inputURL.value = "";
+          $inputURL.setAttribute("disabled", "");
 
           // Actualizar el DOM directamente
-          if ($displayElement && $displayURL) {
+          if ($displayElement && $displayURL && $originalURL) {
             $displayElement.textContent = data.shortUrl;
+            $originalURL.textContent = data.url;
             $displayElement.classList.add("animate-fade-in");
-            $displayElement.classList.add("text-secondary");
-            $displayURL.classList.add("bg-background/100");
+            $displayElement.classList.add("text-secondary-light");
           }
+
           $inputURL.focus();
           $inputURL.removeAttribute("disabled");
         })
@@ -188,6 +168,61 @@ import { features } from "../assets/features";
           console.log(error);
           $inputURL.value = "";
         });
+    });
+
+    // Copiar URL al hacer clic en la card
+    $displayURL?.addEventListener("click", () => {
+      if ($displayURL?.textContent?.includes("Ejemplo")) return;
+
+      navigator.clipboard.writeText($displayURL?.textContent || "");
+      $displayURL?.classList.add("bg-background/90");
+      notify.success("URL copiada al portapapeles");
+    });
+
+    // Copiar URL al hacer clic en el botón de copiar
+    $copyBtn?.addEventListener("click", () => {
+      if ($displayURL?.textContent?.includes("Ejemplo")) return;
+
+      const $copyIcon = document.getElementById("copy-icon");
+      const $checkIcon = document.getElementById("check-icon");
+
+      const url = $displayURL?.textContent?.trim() || window.location.href;
+
+      navigator.clipboard.writeText(url);
+      notify.success("URL copiada al portapapeles");
+
+      $copyIcon?.classList.add("scale-0", "opacity-0");
+      $checkIcon?.classList.remove("scale-0", "opacity-0");
+      $checkIcon?.classList.add("scale-110");
+
+      setTimeout(() => {
+        $checkIcon?.classList.add("scale-0", "opacity-0");
+        $checkIcon?.classList.remove("scale-110");
+        $copyIcon?.classList.remove("scale-0", "opacity-0");
+      }, 2000);
+    });
+
+    // Redirigir URL al hacer clic en el botón de abrir
+    $openUrlBtn?.addEventListener("click", async () => {
+      if ($displayURL?.textContent?.includes("Ejemplo")) return;
+
+      const $externalLinkIcon = document.getElementById("external-link-icon");
+      const newURL = $displayURL?.textContent?.trim();
+      if (!newURL) return;
+
+      try {
+        $externalLinkIcon?.classList.add("scale-0", "opacity-0");
+        window.open(newURL, "_blank");
+
+        // Pequeña pausa para que se vea la animación
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error("Error al abrir URL:", error);
+        $openUrlBtn.classList.add("text-red-500");
+        setTimeout(() => $openUrlBtn.classList.remove("text-red-500"), 1000);
+      } finally {
+        $externalLinkIcon?.classList.remove("scale-0", "opacity-0");
+      }
     });
   </script>
 </Layout>

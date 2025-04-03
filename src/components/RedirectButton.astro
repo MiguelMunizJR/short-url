@@ -1,0 +1,31 @@
+<button
+  id="open-url-btn"
+  aria-label="Abrir URL en nueva pestaña"
+  class="group relative text-secondary hover:text-secondary-light transition-all duration-200 rounded-md p-1 cursor-pointer z-20 h-6 w-6"
+  title="Abrir en nueva pestaña"
+>
+  <svg
+    id="external-link-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="absolute inset-0 h-6 w-6 transition-all duration-200 group-hover:scale-110"
+  >
+    <path d="M15 3h6v6"></path>
+    <path d="M10 14 21 3"></path>
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+  </svg>
+
+  <!-- Tooltip -->
+  <span
+    class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-800 whitespace-nowrap"
+  >
+    Abrir URL
+  </span>
+</button>
