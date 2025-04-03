@@ -1,10 +1,9 @@
 ---
 import { shortendURLTable, eq, db } from "astro:db";
-import Layout from "../layouts/Layout.astro";
 const { params, redirect } = Astro;
 const { url_id } = params;
 
-//? Verificar si la url ya existe en la base de datos
+// Verificar si la url ya existe en la base de datos
 const shortenedURL = await db
   .select()
   .from(shortendURLTable)
@@ -14,12 +13,7 @@ if (shortenedURL.length === 0) {
   return redirect("/");
 }
 
+// Redireccionar a la url original 💀
 const newURL = new URL(shortenedURL[0].url);
 return redirect(newURL?.origin, 301);
 ---
-
-<Layout>
-  <main class="flex min-h-[50vh] flex-col items-center justify-center">
-    <h1 class="text-4xl font-bold">Loading...</h1>
-  </main>
-</Layout>

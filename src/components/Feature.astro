@@ -9,7 +9,7 @@ interface Props {
 const { title, description, icon } = Astro.props;
 ---
 
-<div class="rounded-lg p-6 text-center">
+<section class="rounded-lg p-6 text-center">
   <div
     class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple/10"
   >
@@ -21,4 +21,4 @@ const { title, description, icon } = Astro.props;
   </div>
   <h3 class="mb-1 text-lg md:text-xl font-medium">{title}</h3>
   <p class="text-sm text-muted-foreground">{description}</p>
-</div>
+</section>

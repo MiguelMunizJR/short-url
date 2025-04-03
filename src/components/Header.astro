@@ -1,15 +1,19 @@
 ---
-import ThemeToggle from "./ThemeToggle.astro"
+import ThemeToggle from "./ThemeToggle.astro";
 ---
 
-<header class="flex items-center justify-between py-6 md:py-5 px-4 md:px-10">
-  <div class="flex items-center gap-2">
-    <div class="w-4 h-4 md:h-8 md:w-8 rounded-full bg-purple"></div>
-    <p class="md:text-2xl text-lg text-secondary font-semibold">
-      Short<span class="text-primary font-bold">URL</span>
-    </p>
-  </div>
-  <nav>
-    <ThemeToggle />
-  </nav>
+<header
+  class="flex just items-center absolute top-0 py-5 bg-transparent w-full animate-fade-in z-30"
+>
+  <section class="mx-auto w-11/12 sm:w-xl md:w-2xl lg:w-3xl xl:w-5xl flex justify-between items-center gap-2">
+    <div class="flex items-center gap-2">
+      <div class="w-4 h-4 md:h-8 md:w-8 rounded-full bg-purple"></div>
+      <p class="md:text-2xl text-lg text-secondary font-semibold">
+        Shortend<span class="text-primary font-bold">URL</span>
+      </p>
+    </div>
+    <nav>
+      <ThemeToggle />
+    </nav>
+  </section>
 </header>

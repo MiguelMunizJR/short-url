@@ -6,25 +6,28 @@ const {} = Astro.props;
 
 <form
   id="shorten-form"
-  class="w-11/12 mb-10 flex flex-col items-center gap-3 sm:flex-row"
+  class="w-11/12 mb-10 flex flex-col items-center gap-4 sm:gap-2 sm:flex-row"
 >
   <input
     type="text"
     name="inputURL"
     id="inputURL"
     placeholder="Paste your long URL here"
-    class="h-12 w-full outline-0 ring bg-primary/5 ring-purple/30 focus-visible:ring-purple rounded text-foreground px-3 flex items-center"
+    class="h-12 sm:h-10 w-full outline-0 ring bg-primary/5 ring-purple/30 focus-visible:ring-purple disabled:bg-purple-dark/3 disabled:ring-purple/25 rounded-sm text-foreground px-3 flex items-center transition-colors ease-in-out duration-200"
     required
   />
   <button
     type="submit"
-    class="h-12 w-1/2 md:w-auto px-8 bg-purple hover:bg-purple-dark rounded cursor-pointer transition-colors ease-in-out duration-200 text-sm md:text-base font-semibold drop-shadow-md"
+    class="h-12 sm:h-10 w-1/2 md:w-auto px-8 bg-purple hover:bg-purple-dark rounded-sm cursor-pointer transition-colors ease-in-out duration-200 text-sm md:text-base font-semibold drop-shadow-md"
     >Shorten</button
   >
 </form>
 
 <script>
   const $form = document.getElementById("shorten-form");
+  const $inputURL = document.getElementById("inputURL") as HTMLInputElement;
+  import { notyfInstance } from "../utils";
+  const notyf = notyfInstance();
   const API_URL = "/api/shorten";
 
   $form?.addEventListener("submit", (event) => {
@@ -43,7 +46,18 @@ const {} = Astro.props;
         throw new Error("Something went wrong");
       })
       .then((data) => {
+        $inputURL.setAttribute("disabled", "");
         console.log(data);
+        notyf.success(`Short URL created! ${data.shortUrl}🎉`);
+        $inputURL.value = "";
+        setTimeout(() => {
+          $inputURL.focus();
+          $inputURL.removeAttribute("disabled");
+        }, 3000);
+      })
+      .catch(() => {
+        notyf.error("Algo salió mal, intenta de nuevo más tarde.");
+        $inputURL.value = "";
       });
   });
 </script>

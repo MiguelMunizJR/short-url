@@ -7,11 +7,11 @@ import { features } from "../assets/features";
 
 <Layout>
   <main
-    class="flex px-4 sm:px-8 flex-col justify-center bg-gradient-to-b from-30% from-background to-70% to-[#130b1dcc] text-foreground"
+    class="flex pt-24 pb-48 px-4 sm:px-8 flex-col justify-center bg-gradient-to-b from-30% from-background via-40% via-[#000] to-70% to-[#130b1db4] text-foreground"
   >
     {/* Hero Section */}
     <section
-      class="w-full py-24 md:py-40 flex flex-col justify-center items-center text-center text-pretty"
+      class="max-w-2xl mx-auto py-24 sm:py-34 md:py-40 flex flex-col justify-center items-center text-center text-pretty animate-fade-in-down"
     >
       <h1
         class="mb-4 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl"
@@ -27,14 +27,14 @@ import { features } from "../assets/features";
     </section>
 
     {/* Features Section */}
-    <section class="py-14 pb-20 w-full flex flex-col items-center">
-      <div class="container">
-        <h2 class="mb-12 text-center text-2xl md:text-3xl font-bold">
-          ¿Por que <span class="text-secondary">Short</span><span
+    <section class="py-14 pb-20 w-full flex flex-col items-center ">
+      <div class="container w-11/12 sm:w-xl md:w-2xl lg:w-3xl xl:w-4xl">
+        <h2 class="mb-12 text-center text-2xl md:text-3xl font-bold animate-fade-in animate-delay-100">
+          ¿Por que <span class="text-secondary">Shortend</span><span
             class="text-primary">URL</span
           >?
         </h2>
-        <div class="grid gap-8 md:grid-cols-3">
+        <div class="grid gap-8 md:grid-cols-3 animate-fade-in animate-delay-200">
           {features?.map((feature) => <Feature {...feature} />)}
         </div>
       </div>
