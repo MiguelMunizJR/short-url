@@ -42,18 +42,20 @@ export const isRelativeTime = (
 
     return "✅ Creado justo ahora";
   } else {
-    if (seconds <= 0) return "⌛ Expirado";
-    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-      const interval = Math.floor(seconds / secondsInUnit);
+    // if (seconds <= 0) return "⌛ Expirado";
+    // for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+    //   const interval = Math.floor(seconds / secondsInUnit);
 
-      if (interval >= 1) {
-        const unitText = interval === 1 ? unit : `${unit}s`;
+    //   if (interval >= 1) {
+    //     const unitText = interval === 1 ? unit : `${unit}s`;
 
-        return `⌛ Expira en ${interval} ${unitText}`;
-      }
-    }
+    //     return `⌛ Expira en ${interval} ${unitText}`;
+    //   }
+    // }
 
-    return "⌛ Expira en unos segundos";
+    // return "⌛ Expira en unos segundos";
+
+    return "⌛ Expira en ..."
   }
 };
 
@@ -61,3 +63,4 @@ export const countClicks = (clicks: number): string => {
   if (!clicks) return "🌐 0 Clicks";
   return `🌐 ${clicks} Clicks`;
 };
+

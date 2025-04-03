@@ -10,6 +10,7 @@ export async function GET(context: APIContext) {
     return redirect("/", 302);
   }
 
+  // Comprobar si la url ya existe en la base de datos
   try {
     const result = await db
       .select()
@@ -21,16 +22,11 @@ export async function GET(context: APIContext) {
       return redirect("/");
     }
 
-    // Get original URL and normalize it
+    // Obtener la URL original
     const originalUrl = result[0].url.trim();
 
-    try {
-      new URL(originalUrl);
-      return redirect(originalUrl, 301);
-    } catch (error) {
-      console.error("Invalid URL format:", originalUrl);
-      return redirect("/");
-    }
+    new URL(originalUrl);
+    return redirect(originalUrl, 301);
   } catch (error) {
     console.error("Database error:", error);
     return redirect("/");

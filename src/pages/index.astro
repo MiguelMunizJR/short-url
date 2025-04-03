@@ -131,6 +131,8 @@ import RedirectButton from "../components/RedirectButton.astro";
 
     const API_URL = "/api/shorten";
     let originalURL = "";
+    let clicks: number = 0;
+    let hashURL: string = "";
 
     $form?.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -160,8 +162,10 @@ import RedirectButton from "../components/RedirectButton.astro";
         .then((data) => {
           const relativeTextTime = isRelativeTime(data.createdAt, true);
           const expireTextTime = isRelativeTime(data.createdAt, false);
-          const clicks = countClicks(data.clicks);
+          clicks = data.clicks;
           originalURL = data.shortUrl;
+          hashURL = data.hash_url;
+          const clickMessage = countClicks(clicks);
 
           confetti({
             particleCount: 120,
@@ -185,7 +189,7 @@ import RedirectButton from "../components/RedirectButton.astro";
             $displayElement.textContent = originalURL;
             $createdAt.textContent = relativeTextTime;
             $expireAt.textContent = expireTextTime;
-            $clicks.textContent = clicks;
+            $clicks.textContent = clickMessage;
 
             // Buttons
             $copyBtn?.classList.remove("hidden");
@@ -243,8 +247,20 @@ import RedirectButton from "../components/RedirectButton.astro";
 
       if ($displayURL?.textContent?.includes("Ejemplo")) return;
       const url = $originalURL?.textContent?.trim() || window.location.href;
+      const shortUrl = $displayElement?.textContent?.trim();
 
       try {
+        if (shortUrl) {
+          // Actualizar el clickCount
+          await fetch("/api/track-click", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ hashURL, clicks }),
+          });
+        }
+
         window.open(url, "_blank");
       } catch (error) {
         console.error("Error al abrir URL:", error);
