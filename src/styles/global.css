@@ -1,7 +1,8 @@
 @import "tailwindcss";
+@plugin "@midudev/tailwind-animations";
 
 @theme {
-    --color-background: #0a0a0b;
+    --color-background: #020103;
     --color-foreground: #fafafa;
 
     --color-card: #0a0a0b;
