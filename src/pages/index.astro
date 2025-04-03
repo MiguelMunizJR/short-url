@@ -7,37 +7,187 @@ import { features } from "../assets/features";
 
 <Layout>
   <main
-    class="flex pt-24 pb-48 px-4 sm:px-8 flex-col justify-center bg-gradient-to-b from-30% from-background via-40% via-[#000] to-70% to-[#130b1db4] text-foreground"
+    class="flex pt-24 pb-48 flex-col justify-center bg-gradient-to-b from-30% from-background via-40% via-[#000] to-70% to-[#130b1db4] text-foreground"
   >
     {/* Hero Section */}
     <section
-      class="max-w-2xl mx-auto py-24 sm:py-34 md:py-40 flex flex-col justify-center items-center text-center text-pretty animate-fade-in-down"
+      class="max-w-2xl mx-auto pt-20 sm:pt-34 md:pt-40 px-6 sm:px-0 flex flex-col justify-center items-center text-center text-pretty animate-fade-in-down"
     >
       <h1
-        class="mb-4 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl"
+        class="mb-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-6xl"
       >
-        <span class="text-purple">Short</span> URLs, <span class="text-orange"
-          >Big</span
-        > Impact
+        <span class="text-purple">Acorta </span>tus URLs, tu mejor <span
+          class="text-orange">Opción</span
+        >
       </h1>
-      <p class="mx-auto mb-8 max-w-md text-muted-foreground">
-        Create memorable links in seconds. Track clicks. Share anywhere.
+      <p
+        class="mx-auto mb-4 md:mb-8 text-sm md:text-base max-w-md text-muted-foreground"
+      >
+        Crear enlaces memorables en segundos. Seguimiento de clicks. Compartir
+        en cualquier lugar.
       </p>
       <Input />
     </section>
 
+    {/* URL Result Section */}
+    <section
+      class="max-w-2xl mx-auto flex-col justify-center items-center text-center text-pretty animate-fade-in-down px-6 sm:px-0 flex"
+    >
+      <article
+        class="mt-2 flex w-full sm:w-136 md:max-w-lg rounded-lg border border-purple/20 bg-purple/5 p-4 relative flex-col items-center justify-center drop-shadow-md"
+      >
+        <article class="w-full flex items-center justify-between mb-2">
+          <p class="text-sm font-medium text-muted-foreground">
+            Tu URL acortada
+          </p>
+          <div class="flex gap-2">
+            <button
+              aria-label="Copiar URL"
+              class="h-8 w-8 text-secondary/70 cursor-pointer hover:text-secondary transition-colors ease-in-out duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-clipboard-copy-icon lucide-clipboard-copy"
+                ><rect width="8" height="4" x="8" y="2" rx="1" ry="1"
+                ></rect><path
+                  d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
+                ></path><path d="M16 4h2a2 2 0 0 1 2 2v4"></path><path
+                  d="M21 14H11"></path><path d="m15 10-4 4 4 4"></path></svg
+              >
+              <span class="sr-only">Copiar URL</span>
+            </button>
+            <button
+              class="h-8 w-8 text-secondary/70 cursor-pointer hover:text-secondary transition-colors ease-in-out duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-external-link-icon lucide-external-link"
+                ><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path
+                  d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                ></path></svg
+              >
+              <span class="sr-only">Abrir URL</span>
+            </button>
+          </div>
+        </article>
+
+        <article class="w-full flex items-center gap-2 mb-3">
+          <div id="display-url" class="rounded bg-background/50 p-2 flex-1">
+            <p
+              id="shortened-url-display"
+              class="font-medium text-purple truncate animate-fade-in"
+            >
+              https://short.url/a7b9c3
+            </p>
+          </div>
+        </article>
+
+        <article
+          class="w-full flex-col items-center text-xs text-muted-foreground gap-2"
+        >
+          <div class="flex items-center justify-center">
+            <p class="text-muted-foreground text-pretty">
+              Original: https://example.com/very-long-url-that-needs-shortening
+            </p>
+          </div>
+          <p class="text-muted-foreground pt-4 text-pretty font-semibold">
+            Creado: Justo ahora
+          </p>
+        </article>
+      </article>
+
+      <p
+        class="text-xs text-muted-foreground text-center text-pretty py-4 w-3/4 mx-auto"
+      >
+        No necesitas registrarte. Usos básicos gratuitos.
+      </p>
+    </section>
+
     {/* Features Section */}
-    <section class="py-14 pb-20 w-full flex flex-col items-center ">
+    <section class="pt-26 pb-20 w-full flex flex-col items-center">
       <div class="container w-11/12 sm:w-xl md:w-2xl lg:w-3xl xl:w-4xl">
-        <h2 class="mb-12 text-center text-2xl md:text-3xl font-bold animate-fade-in animate-delay-100">
+        <h2
+          class="mb-12 text-center text-2xl md:text-3xl font-bold animate-fade-in animate-delay-100"
+        >
           ¿Por que <span class="text-secondary">Shortend</span><span
             class="text-primary">URL</span
           >?
         </h2>
-        <div class="grid gap-8 md:grid-cols-3 animate-fade-in animate-delay-200">
+        <div
+          class="grid gap-8 md:grid-cols-3 animate-fade-in animate-delay-200"
+        >
           {features?.map((feature) => <Feature {...feature} />)}
         </div>
       </div>
     </section>
   </main>
+
+  <script>
+    import confetti from "canvas-confetti";
+    const $form = document.getElementById("shorten-form");
+    const $inputURL = document.getElementById("inputURL") as HTMLInputElement;
+    const $displayElement = document.getElementById("shortened-url-display");
+    const $displayURL = document.getElementById("display-url");
+
+    const API_URL = "/api/shorten";
+    let shortenedURL = "";
+
+    $form?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.target as HTMLFormElement);
+
+      fetch(API_URL, {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+
+          throw new Error("Something went wrong");
+        })
+        .then((data) => {
+          $inputURL.setAttribute("disabled", "");
+          $inputURL.value = "";
+          shortenedURL = data.shortUrl;
+          confetti({
+            particleCount: 120,
+            spread: 100,
+            origin: { y: 0.6 },
+            disableForReducedMotion: true,
+          });
+
+          // Actualizar el DOM directamente
+          if ($displayElement && $displayURL) {
+            $displayElement.textContent = data.shortUrl;
+            $displayElement.classList.add("animate-fade-in");
+            $displayElement.classList.add("text-secondary");
+            $displayURL.classList.add("bg-background/100");
+          }
+          $inputURL.focus();
+          $inputURL.removeAttribute("disabled");
+        })
+        .catch((error) => {
+          console.log(error);
+          $inputURL.value = "";
+        });
+    });
+  </script>
 </Layout>
