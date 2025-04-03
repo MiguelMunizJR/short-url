@@ -59,7 +59,6 @@
   
   html {
     font-family: "Inter", sans-serif;
-    transition: all 500ms ease, color 300ms ease-in-out;
   }
 }
 

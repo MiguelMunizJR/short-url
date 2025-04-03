@@ -18,8 +18,8 @@ import RedirectButton from "../components/RedirectButton.astro";
       <h1
         class="mb-4 text-4xl font-bold tracking-tight sm:text-4xl md:text-6xl"
       >
-        <span class="text-primary">🌐Acorta </span>tus URLs, tu mejor <span
-          class="text-secondary">Opción</span
+        <span class="text-purple">🌐Acorta </span>tus URLs, tu mejor <span
+          class="text-orange">Opción</span
         >
       </h1>
       <p
@@ -72,7 +72,8 @@ import RedirectButton from "../components/RedirectButton.astro";
             <span id="created-at"></span>
           </p>
           <p class="text-secondary-light text-pretty text-end">
-            <span id="expire-at" class="text-secondary-light font-semibold"></span>
+            <span id="expire-at" class="text-secondary-light font-semibold"
+            ></span>
           </p>
           <p class="text-secondary-light text-pretty text-end">
             <span id="clicks"></span>
@@ -129,6 +130,7 @@ import RedirectButton from "../components/RedirectButton.astro";
     const $openUrlBtn = document.getElementById("open-url-btn");
 
     const API_URL = "/api/shorten";
+    let originalURL = "";
 
     $form?.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -159,6 +161,7 @@ import RedirectButton from "../components/RedirectButton.astro";
           const relativeTextTime = isRelativeTime(data.createdAt, true);
           const expireTextTime = isRelativeTime(data.createdAt, false);
           const clicks = countClicks(data.clicks);
+          originalURL = data.shortUrl;
 
           confetti({
             particleCount: 120,
@@ -178,8 +181,8 @@ import RedirectButton from "../components/RedirectButton.astro";
             $clicks
           ) {
             // Text Content
-            $displayElement.textContent = data.shortUrl;
             $originalURL.textContent = data.url;
+            $displayElement.textContent = originalURL;
             $createdAt.textContent = relativeTextTime;
             $expireAt.textContent = expireTextTime;
             $clicks.textContent = clicks;
@@ -203,20 +206,23 @@ import RedirectButton from "../components/RedirectButton.astro";
     });
 
     // Copiar URL al hacer clic en la card
-    $displayURL?.addEventListener("click", () => {
+    $displayURL?.addEventListener("click", (e) => {
+      e.stopPropagation();
       if ($displayURL?.textContent?.includes("Ejemplo")) return;
+      const url = originalURL || window.location.href;
 
-      navigator.clipboard.writeText($displayURL?.textContent || "");
+      navigator.clipboard.writeText(url);
       $displayURL?.classList.add("bg-background/90");
       notify.success("URL copiada al portapapeles");
     });
 
     // Copiar URL al hacer clic en el botón de copiar
-    $copyBtn?.addEventListener("click", () => {
+    $copyBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
       if ($displayURL?.textContent?.includes("Ejemplo")) return;
 
       const $checkIcon = document.getElementById("check-icon");
-      const url = $displayURL?.textContent?.trim() || window.location.href;
+      const url = originalURL || window.location.href;
 
       navigator.clipboard.writeText(url);
       $copyIcon?.classList.add("scale-0", "opacity-0");
@@ -228,28 +234,22 @@ import RedirectButton from "../components/RedirectButton.astro";
         $checkIcon?.classList.remove("scale-110");
         $copyIcon?.classList.remove("scale-0", "opacity-0");
       }, 2000);
+      return;
     });
 
     // Redirigir URL al hacer clic en el botón de abrir
-    $openUrlBtn?.addEventListener("click", async () => {
-      if ($displayURL?.textContent?.includes("Ejemplo")) return;
+    $openUrlBtn?.addEventListener("click", async (e) => {
+      e.stopPropagation();
 
-      const newURL = $displayURL?.textContent?.trim();
-      if (!newURL) return;
+      if ($displayURL?.textContent?.includes("Ejemplo")) return;
+      const url = $originalURL?.textContent?.trim() || window.location.href;
 
       try {
-        $externalLinkIcon?.classList.add("scale-0", "opacity-0");
-        window.open(newURL, "_blank");
-
-        // Pequeña pausa para que se vea la animación
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        window.open(url, "_blank");
       } catch (error) {
         console.error("Error al abrir URL:", error);
-        $openUrlBtn.classList.add("text-red-500");
-        setTimeout(() => $openUrlBtn.classList.remove("text-red-500"), 1000);
-      } finally {
-        $externalLinkIcon?.classList.remove("scale-0", "opacity-0");
       }
+      return;
     });
   </script>
 </Layout>

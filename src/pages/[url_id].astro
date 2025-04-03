@@ -1,37 +1,39 @@
 ---
 import { shortendURLTable, eq, db } from "astro:db";
-const { params, redirect } = Astro;
-const { url_id } = params;
+import type { APIContext } from "astro";
 
-if (!url_id) {
-  return redirect("/");
-}
+export async function GET(context: APIContext) {
+  const { params, redirect } = context;
+  const { url_id } = params;
 
-// Verificar si la url ya existe en la base de datos
-const shortenedURL = await db
-  .select()
-  .from(shortendURLTable)
-  .where(eq(shortendURLTable.hash_url, url_id))
-  .limit(1);
+  if (!url_id) {
+    return redirect("/", 302);
+  }
 
-if (shortenedURL.length === 0 || !shortenedURL[0]?.url) {
-  return redirect("/");
-}
+  try {
+    const result = await db
+      .select()
+      .from(shortendURLTable)
+      .where(eq(shortendURLTable.hash_url, url_id))
+      .limit(1);
 
-// Obtener la URL original
-const originalUrl = shortenedURL[0].url;
+    if (result.length === 0 || !result[0]?.url) {
+      return redirect("/");
+    }
 
-// Verificar si la URL ya tiene protocolo, si no, agregar https://
-let redirectUrl = originalUrl;
-if (!/^https?:\/\//i.test(originalUrl)) {
-  redirectUrl = `https://${originalUrl}`;
-}
+    // Get original URL and normalize it
+    const originalUrl = result[0].url.trim();
 
-try {
-  new URL(redirectUrl);
-  return redirect(redirectUrl, 301);
-} catch (error) {
-  console.error("URL inválida:", originalUrl);
-  return redirect("/");
+    try {
+      new URL(originalUrl);
+      return redirect(originalUrl, 301);
+    } catch (error) {
+      console.error("Invalid URL format:", originalUrl);
+      return redirect("/");
+    }
+  } catch (error) {
+    console.error("Database error:", error);
+    return redirect("/");
+  }
 }
 ---
