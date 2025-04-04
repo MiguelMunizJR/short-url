@@ -1,5 +1,7 @@
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
+import { API_URL_SUBMIT, URL_REGEX } from "../const";
+import crypto from "crypto";
 
 export const notyfInstance = () => {
   return new Notyf({
@@ -9,14 +11,59 @@ export const notyfInstance = () => {
   });
 };
 
-export const handleSubmit = async (event: Event) => {
-  if (!event) return;
+export const formatURL = (url: string) => {
+  if (!url) return "";
+
+  if (!/^https?:\/\//i.test(url)) {
+    return `https://${url}`;
+  }
+  return url;
+};
+
+export const createRandomHash = (): string =>
+  crypto.randomBytes(4).toString("hex").substring(0, 6);
+
+export const buildShortUrl = (request: Request, hash: string): URL => {
+  const baseUrl = new URL(request.url);
+  return new URL(`${baseUrl.origin}/${hash}`);
+};
+
+export const handleSubmit = async (
+  event: Event
+): Promise<{
+  shortendURLData: any;
+  error: boolean;
+  message: string | null;
+}> => {
+  if (!event)
+    return {
+      shortendURLData: null,
+      error: true,
+      message: null,
+    };
+
   try {
     const formData = new FormData(event.target as HTMLFormElement);
-    const API_URL = "/api/shorten";
-    let isLoading = true;
+    const inputURL = formData.get("inputURL")?.toString().trim();
+    if (!inputURL) return {
+      shortendURLData: null,
+      error: true,
+      message: null,
+    };
 
-    const shortendURLData = await fetch(API_URL, {
+    const formatedURL = formatURL(inputURL || "");
+    if (
+      !URL_REGEX.test(formatedURL) ||
+      inputURL?.toLocaleLowerCase() === "localhost"
+    ) {
+      return {
+        shortendURLData: null,
+        error: true,
+        message: "Por favor, ingresa una URL válida",
+      };
+    }
+
+    const shortendURLData = await fetch(API_URL_SUBMIT, {
       method: "POST",
       body: formData,
     })
@@ -24,25 +71,40 @@ export const handleSubmit = async (event: Event) => {
         if (!response.ok) throw new Error("Something went wrong");
         return response.json();
       })
-      .catch((error) => {
-        throw new Error(error);
+      .then((response) => {
+        return {
+          shortendURLData: response,
+          error: false,
+          message: null,
+        };
       })
-      .finally(() => {
-        isLoading = false;
+      .catch(() => {
+        return {
+          shortendURLData: null,
+          error: true,
+          message: "Ha ocurrido un error al generar el URL",
+        };
       });
 
     if (!shortendURLData) {
-      throw new Error("Failed to generate URL: No data received");
+      return {
+        shortendURLData: null,
+        error: true,
+        message: "Ha ocurrido un error al generar el URL",
+      };
     }
 
-    return shortendURLData;
+    return {
+      shortendURLData,
+      error: false,
+      message: null,
+    };
   } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Unknown error occurred during URL generation";
-
-    throw new Error(errorMessage);
+    return {
+      shortendURLData: null,
+      error: true,
+      message: "Ha ocurrido un error al generar el URL",
+    };
   }
 };
 

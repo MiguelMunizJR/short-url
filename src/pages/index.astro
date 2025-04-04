@@ -110,7 +110,12 @@ import RedirectButton from "../components/RedirectButton.astro";
 
   <script>
     import confetti from "canvas-confetti";
-    import { notyfInstance, isLightTheme, handleSubmit, actionsDOM } from "../assets/utils";
+    import {
+      notyfInstance,
+      isLightTheme,
+      handleSubmit,
+      actionsDOM,
+    } from "../assets/utils";
     const notyf = notyfInstance();
 
     const $form = document.getElementById("shorten-form");
@@ -130,32 +135,38 @@ import RedirectButton from "../components/RedirectButton.astro";
     const $openUrlBtn = document.getElementById("open-url-btn");
 
     const isLight = document.documentElement.classList.contains("light");
+    isLightTheme(isLight, $displayElement as HTMLElement);
     let shortendURL = "";
     let clicksVariable: number = 0;
     let hashURL: string = "";
 
-    // Funcion para manejar el formulario de creación de URL
     $form?.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      isLightTheme(isLight, $displayElement as HTMLElement);
-      const shortendURLData: any = await handleSubmit(event);
+      const { shortendURLData, error, message } = await handleSubmit(event);
+      if (error && message) {
+        notyf.error(message);
+        return;
+      }
 
       shortendURL = shortendURLData?.shortUrl;
       hashURL = shortendURLData?.hash_url;
       clicksVariable = shortendURLData?.clicks;
 
-      actionsDOM({
-        $displayElement,
-        $displayURL,
-        $originalURL,
-        $createdAt,
-        $expireAt,
-        $clicks,
-        $copyBtn,
-        $openUrlBtn,
-        $inputURL,
-      }, shortendURLData);
+      actionsDOM(
+        {
+          $displayElement,
+          $displayURL,
+          $originalURL,
+          $createdAt,
+          $expireAt,
+          $clicks,
+          $copyBtn,
+          $openUrlBtn,
+          $inputURL,
+        },
+        shortendURLData
+      );
 
       confetti({
         particleCount: 100,

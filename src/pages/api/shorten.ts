@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import { db, eq, shortendURLTable } from "astro:db";
 import crypto from "crypto";
+import { URL_REGEX } from "../../const";
+import { formatURL, buildShortUrl, createRandomHash } from "../../assets/utils";
 
 export interface ShortenedURLInterface {
   id: string;
@@ -9,23 +11,6 @@ export interface ShortenedURLInterface {
   clicks: number;
   createdAt: number;
 }
-
-const formatURL = (url: string) => {
-  if (!url) return "";
-
-  if (!/^https?:\/\//i.test(url)) {
-    return `https://${url}`;
-  }
-  return url;
-};
-
-const createRandomHash = (): string =>
-  crypto.randomBytes(4).toString("hex").substring(0, 6);
-
-const buildShortUrl = (request: Request, hash: string): URL => {
-  const baseUrl = new URL(request.url);
-  return new URL(`${baseUrl.origin}/${hash}`);
-};
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -36,10 +21,8 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response("URL is required", { status: 400 });
     }
 
-    // Formateamos el inputURL y le agregamos protocolo si no existe
     const formatedURL = formatURL(inputURL || "");
-
-    if (!formatedURL) {
+    if (!URL_REGEX.test(formatedURL) || inputURL?.toLocaleLowerCase() === "localhost") {
       return new Response("Invalid URL format", { status: 400 });
     }
 
