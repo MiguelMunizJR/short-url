@@ -66,25 +66,7 @@ export const handleSubmit = async (
     const shortendURLData = await fetch(API_URL_SUBMIT, {
       method: "POST",
       body: formData,
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Something went wrong");
-        return response.json();
-      })
-      .then((response) => {
-        return {
-          shortendURLData: response,
-          error: false,
-          message: null,
-        };
-      })
-      .catch(() => {
-        return {
-          shortendURLData: null,
-          error: true,
-          message: "Ha ocurrido un error al generar el URL",
-        };
-      });
+    });
 
     if (!shortendURLData) {
       return {
@@ -95,7 +77,7 @@ export const handleSubmit = async (
     }
 
     return {
-      shortendURLData,
+      shortendURLData: await shortendURLData.json(),
       error: false,
       message: null,
     };
