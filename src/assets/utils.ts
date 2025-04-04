@@ -9,6 +9,102 @@ export const notyfInstance = () => {
   });
 };
 
+export const handleSubmit = async (event: Event) => {
+  if (!event) return;
+  try {
+    const formData = new FormData(event.target as HTMLFormElement);
+    const API_URL = "/api/shorten";
+    let isLoading = true;
+
+    const shortendURLData = await fetch(API_URL, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Something went wrong");
+        return response.json();
+      })
+      .catch((error) => {
+        throw new Error(error);
+      })
+      .finally(() => {
+        isLoading = false;
+      });
+
+    if (!shortendURLData) {
+      throw new Error("Failed to generate URL: No data received");
+    }
+
+    return shortendURLData;
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Unknown error occurred during URL generation";
+
+    throw new Error(errorMessage);
+  }
+};
+
+export const actionsDOM = (documentElements: any, shortendURLData: any) => {
+  if (!documentElements || !shortendURLData) return;
+
+  const {
+    $displayElement,
+    $displayURL,
+    $originalURL,
+    $createdAt,
+    $expireAt,
+    $clicks,
+    $copyBtn,
+    $openUrlBtn,
+    $inputURL,
+  } = documentElements;
+  const { createdAt, clicks, shortUrl, url }: any = shortendURLData;
+
+  const relativeTextTime = isRelativeTime(createdAt, true);
+  const expireTextTime = isRelativeTime(createdAt, false);
+  const clickMessage = countClicks(clicks);
+
+  // Reset
+  $inputURL.value = "";
+  $inputURL.setAttribute("disabled", "");
+
+  // Text Content
+  $originalURL.textContent = url;
+  $displayElement.textContent = shortUrl;
+  $createdAt.textContent = relativeTextTime;
+  $expireAt.textContent = expireTextTime;
+  $clicks.textContent = clickMessage;
+
+  // Animations
+  $displayElement.classList.add("animate-fade-in");
+  $displayElement.classList.add("text-secondary-light");
+  $displayURL.classList.add("h-28");
+
+  // Buttons
+  $copyBtn.classList.remove("hidden");
+  $openUrlBtn.classList.remove("hidden");
+
+  $inputURL.focus();
+  $inputURL.removeAttribute("disabled");
+};
+
+export const isLightTheme = (
+  $isLight: boolean,
+  $displayElement: HTMLElement
+) => {
+  if (!$isLight || !$displayElement) return;
+
+  if ($isLight) {
+    $displayElement?.classList.remove("text-secondary-light");
+    $displayElement?.classList.add("text-secondary");
+  } else {
+    $displayElement?.classList.remove("text-secondary");
+    $displayElement?.classList.add("text-secondary-light");
+  }
+};
+
 export const isRelativeTime = (
   timestamp: number,
   isRelativeTime: boolean
@@ -55,12 +151,11 @@ export const isRelativeTime = (
 
     // return "⌛ Expira en unos segundos";
 
-    return "⌛ Expira en ..."
+    return "⌛ Expira en ...";
   }
 };
 
 export const countClicks = (clicks: number): string => {
-  if (!clicks) return "🌐 0 Clicks";
-  return `🌐 ${clicks} Clicks`;
+  if (!clicks) return "🌐 0 Click";
+  return `🌐 ${clicks} Click`;
 };
-

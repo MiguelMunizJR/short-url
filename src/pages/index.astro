@@ -35,12 +35,12 @@ import RedirectButton from "../components/RedirectButton.astro";
       class="max-w-2xl pt-0 lg:pt-6 mx-auto flex-col justify-center items-center text-center text-pretty animate-fade-in-down px-6 sm:px-0 flex"
     >
       <article
-        class="mt-2 flex w-full sm:w-136 md:max-w-lg rounded-lg ring ring-primary/40 bg-card p-4 relative flex-col items-center justify-center drop-shadow-lg"
+        class="mt-2 flex w-full sm:w-136 md:max-w-lg rounded-lg ring ring-primary/40 bg-card p-3 md:p-4 relative flex-col items-center justify-center drop-shadow-lg"
       >
         <article class="w-full flex flex-col justify-center gap-4 mb-6">
           <div
             id="display-url"
-            class="h-14 w-full items-center flex rounded bg-card-foreground/50 py-2 px-4 transition-colors ease-in-out duration-200 relative drop-shadow-xl"
+            class="h-20 md:h-14 w-full flex justify-center rounded bg-card-foreground/50 transition-all ease-in-out duration-200 relative drop-shadow-xl mx-auto p-4"
           >
             <div class="flex gap-4 absolute bottom-4 right-4 z-10">
               <CopyClipboardButton />
@@ -48,37 +48,38 @@ import RedirectButton from "../components/RedirectButton.astro";
             </div>
             <p
               id="shortened-url-display"
-              class="font-semibold text-base truncate text-primary-dark animate-fade-in"
+              class="font-semibold text-base text-balanced text-primary-dark/60 animate-fade-in text-wrap"
             >
               Ejemplo: https://short.url/e42f3s
             </p>
           </div>
           <p
-            class="text-xs text-font-secondary text-center text-pretty w-3/4 mx-auto"
+            class="text-xs text-font-secondary text-center flex flex-col items-center mx-auto w-40 max-h-20 max-w-40"
           >
-            URL original: <span
+            URL original:
+            <span
               id="original-url"
-              class="text-secondary-dark/80 font-semibold"
+              class="text-secondary-dark/80 font-semibold line-clamp-2 break-words overflow-hidden max-w-full"
             >
-              https://www.example.com/SG43fd2d</span
-            >
+              https://www.example.com/this-Is.an?example=url
+            </span>
           </p>
         </article>
 
-        <article
-          class="w-full flex justify-around items-center text-sm font-semibold text-font-secondary gap-2"
+        <div
+          class="w-full flex justify-around items-center text-xs sm:text-base font-medium text-font-secondary gap-2 text-balanced"
         >
-          <p class="text-secondary-light text-pretty text-end">
+          <p class="text-secondary-light">
             <span id="created-at"></span>
           </p>
-          <p class="text-secondary-light text-pretty text-end">
+          <p class="text-secondary-light">
             <span id="expire-at" class="text-secondary-light font-semibold"
             ></span>
           </p>
-          <p class="text-secondary-light text-pretty text-end">
+          <p class="text-secondary-light">
             <span id="clicks"></span>
           </p>
-        </article>
+        </div>
       </article>
 
       <p
@@ -109,8 +110,8 @@ import RedirectButton from "../components/RedirectButton.astro";
 
   <script>
     import confetti from "canvas-confetti";
-    import { notyfInstance, isRelativeTime, countClicks } from "../assets/utils";
-    const notify = notyfInstance();
+    import { notyfInstance, isLightTheme, handleSubmit, actionsDOM } from "../assets/utils";
+    const notyf = notyfInstance();
 
     const $form = document.getElementById("shorten-form");
     const $inputURL = document.getElementById("inputURL") as HTMLInputElement;
@@ -123,101 +124,56 @@ import RedirectButton from "../components/RedirectButton.astro";
 
     // Icons
     const $copyIcon = document.getElementById("copy-icon");
-    const $externalLinkIcon = document.getElementById("external-link-icon");
 
     // Buttons
     const $copyBtn = document.getElementById("copy-btn");
     const $openUrlBtn = document.getElementById("open-url-btn");
 
-    const API_URL = "/api/shorten";
-    let originalURL = "";
-    let clicks: number = 0;
+    const isLight = document.documentElement.classList.contains("light");
+    let shortendURL = "";
+    let clicksVariable: number = 0;
     let hashURL: string = "";
 
-    $form?.addEventListener("submit", (event) => {
+    // Funcion para manejar el formulario de creación de URL
+    $form?.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const isLight = document.documentElement.classList.contains("light");
 
-      if (isLight) {
-        $displayElement?.classList.remove("text-secondary-light");
-        $displayElement?.classList.add("text-secondary");
-      } else {
-        $displayElement?.classList.remove("text-secondary");
-        $displayElement?.classList.add("text-secondary-light");
-      }
+      isLightTheme(isLight, $displayElement as HTMLElement);
+      const shortendURLData: any = await handleSubmit(event);
 
-      const formData = new FormData(event.target as HTMLFormElement);
+      shortendURL = shortendURLData?.shortUrl;
+      hashURL = shortendURLData?.hash_url;
+      clicksVariable = shortendURLData?.clicks;
 
-      fetch(API_URL, {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
+      actionsDOM({
+        $displayElement,
+        $displayURL,
+        $originalURL,
+        $createdAt,
+        $expireAt,
+        $clicks,
+        $copyBtn,
+        $openUrlBtn,
+        $inputURL,
+      }, shortendURLData);
 
-          throw new Error("Something went wrong");
-        })
-        .then((data) => {
-          const relativeTextTime = isRelativeTime(data.createdAt, true);
-          const expireTextTime = isRelativeTime(data.createdAt, false);
-          clicks = data.clicks;
-          originalURL = data.shortUrl;
-          hashURL = data.hash_url;
-          const clickMessage = countClicks(clicks);
-
-          confetti({
-            particleCount: 120,
-            spread: 100,
-            origin: { y: 0.7 },
-            disableForReducedMotion: true,
-          });
-          $inputURL.value = "";
-          $inputURL.setAttribute("disabled", "");
-
-          if (
-            $displayElement &&
-            $displayURL &&
-            $originalURL &&
-            $createdAt &&
-            $expireAt &&
-            $clicks
-          ) {
-            // Text Content
-            $originalURL.textContent = data.url;
-            $displayElement.textContent = originalURL;
-            $createdAt.textContent = relativeTextTime;
-            $expireAt.textContent = expireTextTime;
-            $clicks.textContent = clickMessage;
-
-            // Buttons
-            $copyBtn?.classList.remove("hidden");
-            $openUrlBtn?.classList.remove("hidden");
-
-            // Animations
-            $displayElement.classList.add("animate-fade-in");
-            $displayElement.classList.add("text-secondary-light");
-          }
-
-          $inputURL.focus();
-          $inputURL.removeAttribute("disabled");
-        })
-        .catch((error) => {
-          console.log(error);
-          $inputURL.value = "";
-        });
+      confetti({
+        particleCount: 100,
+        spread: 90,
+        origin: { y: 0.7 },
+        disableForReducedMotion: true,
+      });
     });
 
     // Copiar URL al hacer clic en la card
     $displayURL?.addEventListener("click", (e) => {
       e.stopPropagation();
       if ($displayURL?.textContent?.includes("Ejemplo")) return;
-      const url = originalURL || window.location.href;
+      const url = shortendURL || "";
 
       navigator.clipboard.writeText(url);
       $displayURL?.classList.add("bg-background/90");
-      notify.success("URL copiada al portapapeles");
+      notyf.success("URL copiada al portapapeles");
     });
 
     // Copiar URL al hacer clic en el botón de copiar
@@ -226,7 +182,7 @@ import RedirectButton from "../components/RedirectButton.astro";
       if ($displayURL?.textContent?.includes("Ejemplo")) return;
 
       const $checkIcon = document.getElementById("check-icon");
-      const url = originalURL || window.location.href;
+      const url = shortendURL || "";
 
       navigator.clipboard.writeText(url);
       $copyIcon?.classList.add("scale-0", "opacity-0");
@@ -246,18 +202,17 @@ import RedirectButton from "../components/RedirectButton.astro";
       e.stopPropagation();
 
       if ($displayURL?.textContent?.includes("Ejemplo")) return;
-      const url = $originalURL?.textContent?.trim() || window.location.href;
+      const url = shortendURL || "";
       const shortUrl = $displayElement?.textContent?.trim();
 
       try {
         if (shortUrl) {
-          // Actualizar el clickCount
           await fetch("/api/track-click", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ hashURL, clicks }),
+            body: JSON.stringify({ hashURL, clicksVariable }),
           });
         }
 

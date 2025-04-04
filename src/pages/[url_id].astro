@@ -10,22 +10,19 @@ export async function GET(context: APIContext) {
     return redirect("/", 302);
   }
 
-  // Comprobar si la url ya existe en la base de datos
   try {
     const result = await db
       .select()
       .from(shortendURLTable)
-      .where(eq(shortendURLTable.hash_url, url_id))
-      .limit(1);
+      .where(eq(shortendURLTable.hash_url, url_id));
 
     if (result.length === 0 || !result[0]?.url) {
       return redirect("/");
     }
 
-    // Obtener la URL original
     const originalUrl = result[0].url.trim();
-
     new URL(originalUrl);
+
     return redirect(originalUrl, 301);
   } catch (error) {
     console.error("Database error:", error);
