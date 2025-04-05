@@ -116,19 +116,18 @@ export const actionsDOM = (documentElements: any, shortendURLData: any) => {
 
   // Text Content
   $originalURL.textContent = url;
-  $displayElement.textContent = shortUrl;
+  $displayElement.textContent = shortUrl
   $createdAt.textContent = relativeTextTime;
   $expireAt.textContent = expireTextTime;
   $clicks.textContent = clickMessage;
 
-  // Animations
-  $displayElement.classList.add("animate-fade-in");
-  $displayElement.classList.add("text-secondary-light");
-  $displayURL.classList.add("h-28");
-
   // Buttons
   $copyBtn.classList.remove("hidden");
   $openUrlBtn.classList.remove("hidden");
+
+  // Animations
+  $displayElement.classList.add("animate-fade-in");
+  $displayElement.classList.add("text-secondary-light");
 
   $inputURL.focus();
   $inputURL.removeAttribute("disabled");
@@ -167,7 +166,7 @@ export const isRelativeTime = (
   };
 
   if (isRelativeTime) {
-    if (seconds < 5) return "✅ Creado justo ahora";
+    if (seconds < 5) return "✅ Justo ahora";
 
     for (const [unit, secondsInUnit] of Object.entries(intervals)) {
       const interval = Math.floor(seconds / secondsInUnit);
@@ -176,11 +175,11 @@ export const isRelativeTime = (
         const textUnit =
           interval === 1 ? unit : unit === "mes" ? "meses" : `${unit}s`;
 
-        return `✅ Creado hace ${interval} ${textUnit}`;
+        return `✅ Hace ${interval} ${textUnit}`;
       }
     }
 
-    return "✅ Creado justo ahora";
+    return "✅ Justo ahora";
   } else {
     // if (seconds <= 0) return "⌛ Expirado";
     // for (const [unit, secondsInUnit] of Object.entries(intervals)) {
