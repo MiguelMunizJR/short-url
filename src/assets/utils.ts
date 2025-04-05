@@ -95,7 +95,6 @@ export const actionsDOM = (documentElements: any, shortendURLData: any) => {
 
   const {
     $displayElement,
-    $displayURL,
     $originalURL,
     $createdAt,
     $expireAt,
@@ -120,15 +119,17 @@ export const actionsDOM = (documentElements: any, shortendURLData: any) => {
   $createdAt.textContent = relativeTextTime;
   $expireAt.textContent = expireTextTime;
   $clicks.textContent = clickMessage;
-
+  
   // Buttons
   $copyBtn.classList.remove("hidden");
   $openUrlBtn.classList.remove("hidden");
-
+  
   // Animations
   $displayElement.classList.add("animate-fade-in");
   $displayElement.classList.add("text-secondary-light");
-
+  $originalURL.classList.add("cursor-pointer");
+  $originalURL.classList.add("hover:text-primary-light");
+  
   $inputURL.focus();
   $inputURL.removeAttribute("disabled");
 };

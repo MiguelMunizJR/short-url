@@ -39,7 +39,7 @@ import RedirectButton from "../components/RedirectButton.astro";
       >
         <article class="w-full flex flex-col justify-center gap-4 mb-6">
           <div class="flex justify-beetwen itens-center w-full h-auto relative">
-            <p class="text-secondary-light text-base text-balanced">
+            <p class="text-secondary-light text-sm sm:text-base text-balanced">
               <span id="created-at"></span>
             </p>
             <div class="flex gap-4 items-center absolute right-0 top-0">
@@ -58,7 +58,7 @@ import RedirectButton from "../components/RedirectButton.astro";
               <span
                 class="text-primary-dark/60 animate-fade-in text-wrap line-clamp-1 break-words text-elipsis overflow-hidden max-w-full"
               >
-                https://shortend-url.app/as33d3
+                https://shortend-url.app/example
               </span>
             </p>
           </div>
@@ -68,7 +68,7 @@ import RedirectButton from "../components/RedirectButton.astro";
             URL original:
             <span
               id="original-url"
-              class="text-secondary-dark/80 font-semibold line-clamp-2 break-words overflow-hidden max-w-full"
+              class="text-secondary-dark/80 font-semibold line-clamp-2 break-words overflow-hidden max-w-full transition-colors ease-in-out duration-200"
             >
               https://www.example.com/this-Is.an?example=url
             </span>
@@ -186,7 +186,7 @@ import RedirectButton from "../components/RedirectButton.astro";
     // Copiar URL al hacer clic en la card
     $displayURL?.addEventListener("click", (e) => {
       e.stopPropagation();
-      if ($displayURL?.textContent?.includes("Ejemplo")) return;
+      if ($displayURL?.textContent?.includes("example")) return;
       const url = shortendURL || "";
 
       navigator.clipboard.writeText(url);
@@ -220,11 +220,10 @@ import RedirectButton from "../components/RedirectButton.astro";
       e.stopPropagation();
 
       if ($displayURL?.textContent?.includes("Ejemplo")) return;
-      const url = shortendURL || "";
-      const shortUrl = $displayElement?.textContent?.trim();
+      const URL = shortendURL || "";
 
       try {
-        if (shortUrl) {
+        if (hashURL) {
           await fetch(API_URL_TRACK_CLICK, {
             method: "POST",
             headers: {
@@ -234,11 +233,25 @@ import RedirectButton from "../components/RedirectButton.astro";
           });
         }
 
-        window.open(url, "_blank");
+        window.open(URL, "_blank");
       } catch (error) {
         console.error("Error al abrir URL:", error);
       }
       return;
+    });
+
+    // Navegar al hacer click en la URL original
+    $originalURL?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if ($originalURL?.textContent?.includes("example")) return;
+      const URL = $originalURL?.textContent?.trim();
+
+      try {
+        window.open(URL, "_blank");
+      } catch (error) {
+        console.error("Error al abrir URL:", error);
+        return;
+      }
     });
   </script>
 </Layout>

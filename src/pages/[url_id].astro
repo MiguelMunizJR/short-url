@@ -1,32 +1,26 @@
 ---
 import { shortendURLTable, eq, db } from "astro:db";
-import type { APIContext } from "astro";
+const { params, redirect } = Astro;
+const { url_id } = params;
 
-export async function GET(context: APIContext) {
-  const { params, redirect } = context;
-  const { url_id } = params;
+if (!url_id) {
+  return redirect("/", 301);
+}
 
-  if (!url_id) {
+try {
+  const [existingEntry] = await db
+    .select()
+    .from(shortendURLTable)
+    .where(eq(shortendURLTable.hash_url, url_id.trim()));
+
+  if (!existingEntry.url) {
     return redirect("/", 302);
   }
 
-  try {
-    const result = await db
-      .select()
-      .from(shortendURLTable)
-      .where(eq(shortendURLTable.hash_url, url_id));
-
-    if (result.length === 0 || !result[0]?.url) {
-      return redirect("/");
-    }
-
-    const originalUrl = result[0].url.trim();
-    new URL(originalUrl);
-
-    return redirect(originalUrl, 301);
-  } catch (error) {
-    console.error("Database error:", error);
-    return redirect("/");
-  }
+  const URL = existingEntry?.url;
+  return redirect(URL, 302);
+} catch (error) {
+  console.error("Database error:", error);
+  return redirect("/", 301);
 }
 ---
